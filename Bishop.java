@@ -1,0 +1,60 @@
+import javax.swing.ImageIcon;
+
+public class Bishop extends ChessPiece 
+{
+	public Bishop(boolean team) {
+		super( Type.BISHOP, team);
+		
+		ImageIcon figure=null;
+		try
+		{
+			if (team== Team.WHITE)
+				figure= new ImageIcon("BishopWhite.png");
+			else
+				figure= new ImageIcon("BishopBlack.png");
+		}
+		catch(Exception e)
+		{
+			System.out.println("Error Reading Pawn Figure");
+			System.exit(1);
+		}
+		this.setImage(figure);
+		
+	}
+	
+	public boolean validateMove(Location destination)
+	{
+		ChessBoard chess= ChessBoard.getInstance();
+		
+		int h= this.getLocation().getX();
+		int w= this.getLocation().getY();
+		
+		int hD=destination.getX();
+		int wD=destination.getY();
+		
+		if ( ((h-hD) == (w-wD) || (h-hD) == -(w-wD)) && (h!=hD && w!=wD))
+		{
+			int i,j,m,n;
+			m=h>hD? -1 : 1;
+			n=w>wD? -1 : 1;
+			
+			i=h+m;
+			j=w+n;
+			while(i!=hD || j!=wD)
+			{
+				if (chess.squares[i][j].getState()==State.CAPTURED )
+					return false;
+				i=i+m;
+				j=j+n;
+			}
+			if(chess.squares[i][j].getState()==State.CAPTURED)
+				if(chess.squares[i][j].getPiece().getSide()== this.side)
+					return false;
+		}
+		else 
+			return false;
+		
+		return true;
+	}
+	
+}
